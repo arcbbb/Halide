@@ -13,6 +13,7 @@
 #include "CodeGen_MIPS.h"
 #include "CodeGen_PowerPC.h"
 #include "CodeGen_X86.h"
+#include "CodeGen_RISCV.h"
 #include "Debug.h"
 #include "Deinterleave.h"
 #include "ExprUsesVar.h"
@@ -130,6 +131,12 @@ using std::vector;
 #define InitializeHexagonTarget()       InitializeTarget(Hexagon)
 #define InitializeHexagonAsmParser()    InitializeAsmParser(Hexagon)
 #define InitializeHexagonAsmPrinter()   InitializeAsmPrinter(Hexagon)
+#endif
+
+#ifdef WITH_RISCV
+#define InitializeRISCVTarget()       InitializeTarget(RISCV)
+#define InitializeRISCVAsmParser()    InitializeAsmParser(RISCV)
+#define InitializeRISCVAsmPrinter()   InitializeAsmPrinter(RISCV)
 #endif
 
 namespace {
@@ -313,7 +320,8 @@ CodeGen_LLVM *CodeGen_LLVM::new_for_target(const Target &target,
         user_error << "Invalid target architecture for GPU backend: "
                    << target.to_string() << "\n";
         return nullptr;
-
+    } else if (target.arch == Target::RISCV) {
+        return make_codegen<CodeGen_RISCV>(target, context);
     } else if (target.arch == Target::X86) {
         return make_codegen<CodeGen_X86>(target, context);
     } else if (target.arch == Target::ARM) {
@@ -448,6 +456,7 @@ bool CodeGen_LLVM::llvm_NVPTX_enabled = false;
 bool CodeGen_LLVM::llvm_Mips_enabled = false;
 bool CodeGen_LLVM::llvm_PowerPC_enabled = false;
 bool CodeGen_LLVM::llvm_AMDGPU_enabled = false;
+bool CodeGen_LLVM::llvm_RISCV_enabled = false;
 
 namespace {
 

@@ -286,6 +286,7 @@ const std::map<std::string, Target::Arch> arch_name_map = {
     {"mips", Target::MIPS},
     {"powerpc", Target::POWERPC},
     {"hexagon", Target::Hexagon},
+    {"riscv", Target::RISCV},
 };
 
 bool lookup_arch(const std::string &tok, Target::Arch &result) {
@@ -627,6 +628,9 @@ bool Target::supported() const {
 #endif
 #if !defined(WITH_D3D12)
     bad |= has_feature(Target::D3D12Compute);
+#endif
+#if !defined(WITH_RISCV)
+    bad |= arch == Target::RISCV;
 #endif
     return !bad;
 }

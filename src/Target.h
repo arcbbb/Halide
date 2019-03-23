@@ -34,6 +34,7 @@ struct Target {
         MIPS,
         Hexagon,
         POWERPC,
+        RISCV,
     } arch;
 
     /** The bit-width of the target machine. Must be 0 for unknown, or 32 or 64. */

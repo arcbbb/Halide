@@ -101,6 +101,7 @@ set(RUNTIME_CPP
   windows_yield
   write_debug_image
   x86_cpu_features
+  riscv_cpu_features
 )
 
 set (RUNTIME_LL
@@ -299,6 +300,7 @@ set(HEADER_FILES
   CodeGen_Posix.h
   CodeGen_PowerPC.h
   CodeGen_PTX_Dev.h
+  CodeGen_RISCV.h
   CodeGen_X86.h
   ConciseCasts.h
   CPlusPlusMangle.h
@@ -473,6 +475,7 @@ add_library(Halide ${HALIDE_LIBRARY_TYPE}
   CodeGen_Posix.cpp
   CodeGen_PowerPC.cpp
   CodeGen_PTX_Dev.cpp
+  CodeGen_RISCV.cpp
   CodeGen_X86.cpp
   CPlusPlusMangle.cpp
   CSE.cpp
@@ -688,6 +691,11 @@ endif()
 
 if (TARGET_D3D12COMPUTE)
   target_compile_definitions(Halide PRIVATE "-DWITH_D3D12=1")
+endif()
+
+if (TARGET_RISCV)
+  target_compile_definitions(Halide PRIVATE "-DWITH_RISCV=1")
+  list(APPEND LLVM_COMPONENTS RISCV)
 endif()
 
 target_compile_definitions(Halide PRIVATE "-DLLVM_VERSION=${LLVM_VERSION}")

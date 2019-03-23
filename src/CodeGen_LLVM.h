@@ -119,6 +119,7 @@ protected:
     static bool llvm_Mips_enabled;
     static bool llvm_PowerPC_enabled;
     static bool llvm_AMDGPU_enabled;
+    static bool llvm_RISCV_enabled;
 
     std::unique_ptr<llvm::Module> module;
     llvm::Function *function;

@@ -243,6 +243,12 @@ DECLARE_NO_INITMOD(hvx_128)
 DECLARE_NO_INITMOD(hexagon_cpu_features)
 #endif  // WITH_HEXAGON
 
+#ifdef WITH_RISCV
+DECLARE_CPP_INITMOD(riscv_cpu_features)
+#else
+DECLARE_NO_INITMOD(riscv_cpu_features)
+#endif  // WITH_RISCV
+
 namespace {
 
 llvm::DataLayout get_data_layout_for_target(Target target) {
@@ -311,6 +317,12 @@ llvm::DataLayout get_data_layout_for_target(Target target) {
         return llvm::DataLayout(
             "e-m:e-p:32:32:32-a:0-n16:32-i64:64:64-i32:32:32-i16:16:16-i1:8:8"
             "-f32:32:32-f64:64:64-v32:32:32-v64:64:64-v512:512:512-v1024:1024:1024-v2048:2048:2048");
+    } else if (target.arch == Target::RISCV) {
+        if (target.bits == 64) {
+            return llvm::DataLayout("e-m:e-p:64:64-i64:64-i128:128-n64-S128");
+        } else {
+            return llvm::DataLayout("e-m:e-p:32:32-i64:64-n32-S128");
+        }
     } else {
         internal_error << "Bad target arch: " << target.arch << "\n";
         return llvm::DataLayout("unreachable");
@@ -425,6 +437,15 @@ llvm::Triple get_triple_for_target(const Target &target) {
     } else if (target.arch == Target::Hexagon) {
         triple.setVendor(llvm::Triple::UnknownVendor);
         triple.setArch(llvm::Triple::hexagon);
+        triple.setObjectFormat(llvm::Triple::ELF);
+    } else if (target.arch == Target::RISCV) {
+        triple.setOS(llvm::Triple::UnknownOS);
+        triple.setVendor(llvm::Triple::UnknownVendor);
+        if (target.bits == 32) {
+            triple.setArch(llvm::Triple::riscv32);
+        } else {
+            triple.setArch(llvm::Triple::riscv64);
+        }
         triple.setObjectFormat(llvm::Triple::ELF);
     } else {
         internal_error << "Bad target arch: " << target.arch << "\n";
@@ -926,6 +947,9 @@ std::unique_ptr<llvm::Module> get_initial_module_for_target(Target t, llvm::LLVM
             }
             if (t.arch == Target::Hexagon) {
                 modules.push_back(get_initmod_hexagon_cpu_features(c, bits_64, debug));
+            }
+            if (t.arch == Target::RISCV) {
+                modules.push_back(get_initmod_riscv_cpu_features(c, bits_64, debug));
             }
         }
 
