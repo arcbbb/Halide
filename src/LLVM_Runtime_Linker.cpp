@@ -334,6 +334,10 @@ llvm::DataLayout get_data_layout_for_target(Target target) {
         if (target.bits == 32) {
             return llvm::DataLayout("e-m:e-p:32:32-i64:64-n32-S128");
         } else {
+            if (target.has_feature(Target::RVV)) {
+                return llvm::DataLayout("e-m:e-p:64:64-i64:64-i128:128-n64-S128"
+                        "-v128:128:128-v256:128:128-v512:128:128-v1024:128:128");
+            }
             return llvm::DataLayout("e-m:e-p:64:64-i64:64-i128:128-n64-S128");
         }
     } else {

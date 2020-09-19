@@ -21,7 +21,11 @@ string CodeGen_RISCV::mcpu() const {
 }
 
 string CodeGen_RISCV::mattrs() const {
-    return "";
+    string arch_flags;
+    if (target.has_feature(Target::RVV)) {
+        arch_flags = "+experimental-v";
+    }
+    return arch_flags;
 }
 
 bool CodeGen_RISCV::use_soft_float_abi() const {
@@ -29,6 +33,10 @@ bool CodeGen_RISCV::use_soft_float_abi() const {
 }
 
 int CodeGen_RISCV::native_vector_bits() const {
+    if (target.has_feature(Target::RVV)) {
+        // FIXME: should check the cpu implementation
+        return 512;
+    }
     return 128;
 }
 
