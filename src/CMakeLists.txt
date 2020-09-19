@@ -94,6 +94,7 @@ set(HEADER_FILES
     IRMutator.h
     IROperator.h
     IRPrinter.h
+    IRPrinterDot.h
     IRVisitor.h
     JITModule.h
     Lambda.h
@@ -253,6 +254,7 @@ set(SOURCE_FILES
     IRMutator.cpp
     IROperator.cpp
     IRPrinter.cpp
+    IRPrinterDot.cpp
     IRVisitor.cpp
     JITModule.cpp
     Lerp.cpp

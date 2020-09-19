@@ -31,6 +31,7 @@
 #include "IRMutator.h"
 #include "IROperator.h"
 #include "IRPrinter.h"
+#include "IRPrinterDot.h"
 #include "InferArguments.h"
 #include "InjectHostDevBufferCopies.h"
 #include "InjectOpenGLIntrinsics.h"
@@ -530,6 +531,8 @@ Module lower(const vector<Function> &output_funcs,
     };
     s = StrengthenRefs().mutate(s);
 
+    IRPrinterDot dotprint(pipeline_name + ".dot");
+    s.accept(&dotprint);
     LoweredFunc main_func(pipeline_name, public_args, s, linkage_type);
 
     // If we're in debug mode, add code that prints the args.
